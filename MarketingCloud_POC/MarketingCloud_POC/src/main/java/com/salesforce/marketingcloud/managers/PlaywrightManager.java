@@ -42,46 +42,52 @@ public class PlaywrightManager {
 	
 	public static Page intializeBrowser() {
 		try {
+			int width = 1920;
+			int height = 1080;
+
+			// Common launch options
+			LaunchOptions lOptions = new LaunchOptions();
+			lOptions.setHeadless(false);
+			List<String> args = new ArrayList<>();
+			args.add("--incognito");
+			args.add("--start-maximized");
+			args.add("--window-position=0,0");
+			args.add("--window-size=" + width + "," + height);
+			lOptions.setArgs(args);
+
 			switch (webBrowserType) {
 			case FIREFOX:
-				Constant.BROWSERCONTEXT = Constant.PLAYWRIGHT.firefox().launch().newContext();
+				Constant.BROWSER = Constant.PLAYWRIGHT.firefox().launch(lOptions);
+				Constant.BROWSERCONTEXT = Constant.BROWSER.newContext(new Browser.NewContextOptions().setViewportSize(new ViewportSize(width, height)));
 				return Constant.BROWSERCONTEXT.newPage();
 
 			case CHROME:
-				LaunchOptions lOptions = new LaunchOptions();
-				lOptions.setHeadless(false);
 				lOptions.channel = "chrome";
-				List<String> args = new ArrayList<>();
-				args.add("--incognito");
-				args.add("--start-maximized");
-				args.add("--window-position=0,0");
-				args.add("--window-size=1920,1080");
-				lOptions.setArgs(args);
-				Browser browser = Constant.PLAYWRIGHT.chromium().launch(lOptions);
-				Constant.BROWSERCONTEXT = browser.newContext(new Browser.NewContextOptions().setViewportSize(new ViewportSize(1280, 585))
+				Constant.BROWSER = Constant.PLAYWRIGHT.chromium().launch(lOptions);
+				Constant.BROWSERCONTEXT = Constant.BROWSER.newContext(new Browser.NewContextOptions().setViewportSize(new ViewportSize(width, height))
 						.setStorageStatePath(Paths.get(Constant.SFAuthFileJSONPath)));
 				return Constant.BROWSERCONTEXT.newPage();
 				
 			case WEBKIT:
-				Constant.BROWSERCONTEXT = Constant.PLAYWRIGHT.webkit().launch().newContext();
+				Constant.BROWSER = Constant.PLAYWRIGHT.webkit().launch(lOptions);
+				Constant.BROWSERCONTEXT = Constant.BROWSER.newContext(new Browser.NewContextOptions().setViewportSize(new ViewportSize(width, height)));
 				return Constant.BROWSERCONTEXT.newPage();
 
 			case CHROMIUM:
-				if(Constant.BROWSERCONTEXT != null)
+				if(Constant.BROWSER != null)
 				{
-					Constant.BROWSERCONTEXT = Constant.BROWSER.newContext();
+					Constant.BROWSERCONTEXT = Constant.BROWSER.newContext(new Browser.NewContextOptions().setViewportSize(new ViewportSize(width, height)));
 				}
 				else {
-				Constant.BROWSER = Constant.PLAYWRIGHT.chromium().launch();
-				Constant.BROWSERCONTEXT = Constant.BROWSER.newContext();
+				Constant.BROWSER = Constant.PLAYWRIGHT.chromium().launch(lOptions);
+				Constant.BROWSERCONTEXT = Constant.BROWSER.newContext(new Browser.NewContextOptions().setViewportSize(new ViewportSize(width, height)));
 				}
 				return Constant.BROWSERCONTEXT.newPage();
 				
 			case EDGE:			
-				LaunchOptions lpcOptionsEdge = new BrowserType.LaunchOptions();
-				lpcOptionsEdge.setHeadless(false);
-				lpcOptionsEdge.channel = "msedge";
-				Constant.BROWSERCONTEXT = Constant.PLAYWRIGHT.chromium().launch(lpcOptionsEdge).newContext();
+				lOptions.channel = "msedge";
+				Constant.BROWSER = Constant.PLAYWRIGHT.chromium().launch(lOptions);
+				Constant.BROWSERCONTEXT = Constant.BROWSER.newContext(new Browser.NewContextOptions().setViewportSize(new ViewportSize(width, height)));
 				return Constant.BROWSERCONTEXT.newPage();
 			
 			default:

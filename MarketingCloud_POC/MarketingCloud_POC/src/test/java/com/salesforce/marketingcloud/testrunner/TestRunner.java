@@ -13,8 +13,8 @@ import io.cucumber.junit.CucumberOptions;
 		plugin={"pretty",
 				"json:target/cucumber-reports/Cucumber.json",
 				"html:test-output",
-				"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"
-				},
+				"io.qameta.allure.cucumber6jvm.AllureCucumber6Jvm"
+						},
 		monochrome = true,
 		dryRun = false
 		)

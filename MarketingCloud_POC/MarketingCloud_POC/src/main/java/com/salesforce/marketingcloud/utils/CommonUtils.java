@@ -15,8 +15,9 @@ import java.util.Random;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.microsoft.playwright.FrameLocator;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Locator.WaitForOptions;
@@ -29,6 +30,8 @@ import com.salesforce.marketingcloud.exception.CustomException;
 import com.salesforce.marketingcloud.managers.FileReaderManager;
 
 public class CommonUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CommonUtils.class);
 
     /**
      * Method to switch to an App using App Launcher
@@ -303,7 +306,8 @@ public class CommonUtils {
             if(value.equals("Draft")) {
                 Constant.quoteURL = Constant.PAGE.url();
                 Constant.quoteNumber = PlaywrightUtils.getText(PlaywrightUtils.getElement("Quote Number Field", Constant.PAGE));
-                ExtentCucumberAdapter.addTestStepLog("Quote Number: '"+ Constant.quoteNumber + "' created Successfully. ");
+                // avoid reporting from utility layer; log result instead
+                LOG.info("Quote Number: '{}' created Successfully.", Constant.quoteNumber);
             }
         }catch(Exception e) {
             throw new CustomException(e.getMessage());
@@ -1282,4 +1286,3 @@ public class CommonUtils {
 		}
 	}
 }
-

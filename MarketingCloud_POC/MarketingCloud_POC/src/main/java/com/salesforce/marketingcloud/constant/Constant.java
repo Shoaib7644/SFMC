@@ -275,4 +275,9 @@ public class Constant {
 	 * Constant used to Store type of Flow
 	 */
 	public static FlowType flow;
+	
+	/**
+	 * Latest email HTML fetched from Mailosaur
+	 */
+	public static String latestEmailHtml;
 }

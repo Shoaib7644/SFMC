@@ -5,10 +5,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
 		<aspectj.version>1.8.10</aspectj.version>
-		<java.version>11</java.version>
+		<java.version>21</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -42,6 +42,11 @@
 			<artifactId>cucumber-picocontainer</artifactId>
 			<version>6.8.1</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+    			<groupId>com.mailosaur</groupId>
+    			<artifactId>mailosaur-java</artifactId>
+    			<version>8.0.0</version>
 		</dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -86,26 +91,14 @@
 			<version>20220320</version>
 		</dependency>
 		<dependency>
-			<groupId>com.aventstack</groupId>
-			<artifactId>extentreports</artifactId>
-			<version>5.0.9</version>
+     		 	<groupId>io.github.bonigarcia</groupId>
+     		 	<artifactId>webdrivermanager</artifactId>
+     			<version>5.5.3</version>
 		</dependency>
 		<dependency>
-			<groupId>tech.grasshopper</groupId>
-			<artifactId>extentreports-cucumber6-adapter</artifactId>
-			<version>2.9.0</version>
-		</dependency>
-
-		<dependency>
-   			 <groupId>io.github.bonigarcia</groupId>
-   			 <artifactId>webdrivermanager</artifactId>
-    		<version>5.5.3</version>
-		</dependency>
-
-		<dependency>
-   			 <groupId>org.seleniumhq.selenium</groupId>
-   			 <artifactId>selenium-java</artifactId>
-   			 <version>4.10.0</version>
+    		 	<groupId>org.seleniumhq.selenium</groupId>
+    		 	<artifactId>selenium-java</artifactId>
+    		 	<version>4.10.0</version>
 		</dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -117,11 +110,27 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
+		<!-- Added for smart validation -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.10.1</version>
+		</dependency>
+<dependency>
+    <groupId>io.qameta.allure</groupId>
+    <artifactId>allure-cucumber6-jvm</artifactId>
+    <version>2.24.0</version>
+</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.7</version>
+		</dependency>
 	</dependencies>
 	<build>
  <pluginManagement>
 		<plugins>
-						
+					
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

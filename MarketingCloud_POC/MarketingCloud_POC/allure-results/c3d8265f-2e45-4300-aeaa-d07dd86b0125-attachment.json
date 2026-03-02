@@ -1,0 +1,21 @@
+{
+  "emailSubject": "EmailFromMailosaur",
+  "linkResults": [
+    {
+      "url": "https://cl.s12.exct.net/?qs\u003deyJkZWtJZCI6IjZmZjE0ZDRhLWJiODQtNDMwNS05OTc5LTFjOGMxYTM4YzFmNSIsImRla1ZlcnNpb24iOjEsIml2IjoibmVlM2VOYkVDUnpqbTlkaUdWOE4xZz09IiwiY2lwaGVyVGV4dCI6IlNDR2ttb3RydTlWQkNvOUV3NXR5WGtvMUZPVGRMbWNodDZCUU5HRm91cmQ5bnVFT1BmQWhGT1owM0RLK3RWakJNS2ZaQ0xoajdwV2kyOFNlZWdrR3J6UFVxUGFHbmVlM2VOYkVDUnpqbTlkaUdWOE4xZz09IiwiYXV0aFRhZyI6IlkrNlZvdHZFbm5vSkJxOHoxS2oyaGc9PSJ9",
+      "statusCode": 200,
+      "broken": false
+    },
+    {
+      "url": "https://cl.s12.exct.net/?qs\u003deyJkZWtJZCI6IjYyZWUxMmRiLTk3NjUtNDU5NC04MGI1LTAwMjE5MDVmMDI1MCIsImRla1ZlcnNpb24iOjEsIml2IjoiZFZsK1AxTjlQSklGSGJaY0VGZ0tLdz09IiwiY2lwaGVyVGV4dCI6Inp3ajJQZHRxQU5KbkZjbFd1WjkvdU9aZUdoK2tnK1M2aTN4bW5YKzRZbUhTR2RUUWgrQzg3TlhORk5nYVFHNUdJRGQ2SmxIRGdhRW9VazV6M0RJUjBSNFExRXVpZFZsK1AxTjlQSklGSGJaY0VGZ0tLdz09IiwiYXV0aFRhZyI6Inc0R2hLRkpPYzl3eUVkRWVFTlJMb2c9PSJ9",
+      "statusCode": -1,
+      "errorMessage": "UnknownHostException: www.bing.coooo",
+      "broken": true
+    },
+    {
+      "url": "https://cl.s12.exct.net/?qs\u003deyJkZWtJZCI6IjNiNzk3OTUyLTg5NzItNGU3Mi05MmZkLTlmNDM2M2YyMWRmOSIsImRla1ZlcnNpb24iOjEsIml2IjoiZjF3RnBDcGJiK0xwMnliQmJiLzRLUT09IiwiY2lwaGVyVGV4dCI6Ilo1TDN6OStSZWwvQWpGYWY0Yk5RbTB6bTFwOERaeHduNFVRTU5xcktoSGYwSGc3SXptU3drWHNmSnZ1TjNUWlNHMTFyNWxiRDJsaXpZK0FubW12dDNSQlNkcnpiZjF3RnBDcGJiK0xwMnliQmJiLzRLUT09IiwiYXV0aFRhZyI6Inc5cFlzMlBnSjVwcjdkMFFVbmE4Mnc9PSJ9",
+      "statusCode": 200,
+      "broken": false
+    }
+  ]
+}
