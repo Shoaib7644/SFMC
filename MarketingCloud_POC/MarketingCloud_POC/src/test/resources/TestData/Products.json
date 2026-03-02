@@ -1,0 +1,35 @@
+{
+	"RenewalTradeDiscount": [
+		{
+			"Action": "RenewalUpdate",
+			"Product": "AWA-CLD",
+			"QuoteLineItemNumber": "1",
+			"EffectiveQuantity": "7",
+			"StartDate": "NA",
+			"EndDate": "2043-11-02",
+			"LineLevelTD":"20"
+		},
+		{
+			"Action": "RenewalAdd",
+			"Product": "AWA-CLD",
+			"QuoteLineItemNumber": "2",
+			"EffectiveQuantity": "8",
+			"StartDate": "NA",
+			"EndDate": "2044-11-02",
+			"LineLevelTD":"20"
+		}
+	],
+	
+	"AmendTradeDiscount": [
+		{
+			"Action": "AmendUpdate",
+			"Product": "AWA-CLD",
+			"QuoteLineItemNumber": "1",
+			"EffectiveQuantity": "7",
+			"StartDate": "NA",
+			"EndDate": "2043-11-02"
+		}
+	]
+}
+
+
