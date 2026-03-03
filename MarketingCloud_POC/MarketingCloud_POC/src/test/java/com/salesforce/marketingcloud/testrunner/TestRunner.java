@@ -9,7 +9,7 @@ import io.cucumber.junit.CucumberOptions;
 @CucumberOptions(
 		features={"src/test/resources/Feature"},
 		glue= {"com/salesforce/marketingcloud/steps","com/salesforce/marketingcloud/hooks"},
-		tags= "@Login",
+		tags= "@Accessibility",
 		plugin={"pretty",
 				"json:target/cucumber-reports/Cucumber.json",
 				"html:test-output",

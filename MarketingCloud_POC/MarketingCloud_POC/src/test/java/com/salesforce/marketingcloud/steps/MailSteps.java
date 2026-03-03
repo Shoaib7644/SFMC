@@ -14,6 +14,8 @@ import io.cucumber.java.en.When;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Assert;
+import com.microsoft.playwright.Page;
+import io.qameta.allure.Allure;
 
 public class MailSteps {
 
@@ -30,6 +32,50 @@ public class MailSteps {
             MailosaurUtils.openEmailInPlaywright(html);
         } catch (RuntimeException e) {
             throw new AssertionError("Email not received within timeout: " + e.getMessage());
+        }
+    }
+
+    @When("Load the latest email HTML into the browser")
+    public void load_latest_email_html_into_browser() {
+        String html = Constant.latestEmailHtml;
+        if (html == null || html.isEmpty()) {
+            String msg = "No email HTML available to load into browser";
+            LOG.error(msg);
+            Allure.step(msg);
+            throw new AssertionError(msg);
+        }
+
+        Page page = Constant.PAGE;
+        try {
+            Allure.step("Load latest email HTML into Playwright page");
+            if (page == null) {
+                // try to create a page from existing context or browser
+                if (Constant.BROWSERCONTEXT != null) {
+                    page = Constant.BROWSERCONTEXT.newPage();
+                } else if (Constant.BROWSER != null) {
+                    Constant.BROWSERCONTEXT = Constant.BROWSER.newContext();
+                    page = Constant.BROWSERCONTEXT.newPage();
+                } else {
+                    String msg = "Playwright Browser/Context not initialized (Constant.BROWSER or Constant.BROWSERCONTEXT is null)";
+                    LOG.error(msg);
+                    Allure.step(msg);
+                    throw new AssertionError(msg);
+                }
+                Constant.PAGE = page;
+            }
+
+            page.setContent(html);
+            page.waitForLoadState();
+
+            LOG.info("Loaded latest email HTML into browser (page)");
+            Allure.step("Loaded latest email HTML into browser");
+        } catch (AssertionError ae) {
+            throw ae;
+        } catch (Exception e) {
+            String msg = "Failed to load email HTML into browser: " + e.getMessage();
+            LOG.error(msg, e);
+            Allure.step(msg);
+            throw new AssertionError(msg, e);
         }
     }
 
