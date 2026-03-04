@@ -2,6 +2,7 @@ package com.salesforce.marketingcloud.steps;
 
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
+import com.salesforce.marketingcloud.context.ValidationContext;
 import com.salesforce.marketingcloud.constant.Constant;
 import com.salesforce.marketingcloud.model.accessibility.AccessibilitySummary;
 import com.salesforce.marketingcloud.services.AccessibilityService;
@@ -29,7 +30,10 @@ public class AccessibilitySteps {
         if (html == null || html.trim().isEmpty()) {
             String msg = "No email HTML found in scenario context (Constant.latestEmailHtml)";
             LOG.error(msg);
-            Assert.fail(msg);
+            // record as soft failure
+            ValidationContext.addError(msg);
+            Allure.step(msg);
+            return;
         }
 
         Page page = Constant.PAGE;
@@ -37,7 +41,9 @@ public class AccessibilitySteps {
         if (page == null) {
             String msg = "Playwright Page is not initialized (Constant.PAGE is null)";
             LOG.error(msg);
-            Assert.fail(msg);
+            ValidationContext.addError(msg);
+            Allure.step(msg);
+            return;
         }
 
         try {
@@ -69,6 +75,17 @@ public class AccessibilitySteps {
 
             LOG.info(summaryText);
 
+            // Add friendly Allure step and parameters for quick visibility in Allure
+            try {
+                Allure.step("Accessibility Scan Results");
+                Allure.parameter("Critical", String.valueOf(summary.getCriticalCount()));
+                Allure.parameter("Serious", String.valueOf(summary.getSeriousCount()));
+                Allure.parameter("Moderate", String.valueOf(summary.getModerateCount()));
+                Allure.parameter("Minor", String.valueOf(summary.getMinorCount()));
+            } catch (Exception e) {
+                LOG.warn("Failed to add Allure parameters", e);
+            }
+
             Allure.addAttachment(
                     "Accessibility Summary",
                     "text/plain",
@@ -85,23 +102,28 @@ public class AccessibilitySteps {
                 );
             }
 
-            // Only assert once using blocking count
-            Assert.assertEquals(
-                    "Accessibility policy failed. " + summaryText,
-                    0,
-                    summary.getBlockingCount()
-            );
-
-            Allure.step("Accessibility policy passed - no critical/serious violations");
-
-        } catch (AssertionError ae) {
-            LOG.error("Accessibility assertion failed", ae);
-            throw ae;
+            // Only assert once using blocking count. Use soft assertion pattern: capture AssertionError instead of throwing
+            try {
+                Assert.assertEquals(
+                        "Accessibility policy failed. " + summaryText,
+                        0,
+                        summary.getBlockingCount()
+                );
+                Allure.step("Accessibility policy passed - no critical/serious violations");
+            } catch (AssertionError ae) {
+                String msg = "Accessibility policy failed: " + ae.getMessage();
+                LOG.error(msg);
+                ValidationContext.addError(msg);
+                Allure.step(msg);
+                Allure.addAttachment("Accessibility Failure", "text/plain", msg, ".txt");
+            }
 
         } catch (Exception e) {
             String msg = "Failed to execute accessibility validation: " + e.getMessage();
             LOG.error(msg, e);
-            Assert.fail(msg);
+            ValidationContext.addError(msg);
+            Allure.step(msg);
+            Allure.addAttachment("Accessibility Exception", "text/plain", msg + "\n" + e.toString(), ".txt");
         }
     }
 }

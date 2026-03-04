@@ -6,6 +6,7 @@ import com.salesforce.marketingcloud.model.accessibility.AccessibilitySummary;
 import com.salesforce.marketingcloud.model.accessibility.AxeResult;
 import com.salesforce.marketingcloud.model.accessibility.AxeViolation;
 import com.salesforce.marketingcloud.model.accessibility.AxeNode;
+import com.salesforce.marketingcloud.reporting.AccessibilityHtmlReportBuilder;
 import com.salesforce.marketingcloud.utils.accessibility.AxeAccessibilityUtil;
 import com.salesforce.marketingcloud.utils.accessibility.AccessibilityException;
 import com.microsoft.playwright.Page;
@@ -61,7 +62,6 @@ public final class AccessibilityService {
                 }
             }
 
-            // ✅ CHANGED: Replaced .builder() with standard 'new' constructor call
             AccessibilitySummary summary = new AccessibilitySummary(
                     total,      // totalViolations
                     critical,   // criticalCount
@@ -74,6 +74,25 @@ public final class AccessibilityService {
 
             // Structured logging - human readable and enterprise friendly
             logStructuredAccessibilityReport(result, summary);
+
+            // Attach executive summary HTML to Allure
+            try {
+                String executiveHtml = AccessibilityHtmlReportBuilder.buildExecutiveSummaryHtml(summary);
+                Allure.addAttachment("Accessibility Executive Summary", "text/html", executiveHtml, ".html");
+            } catch (Exception e) {
+                LOG.warn("Failed to attach executive HTML summary", e);
+            }
+
+            // Add Allure parameters for quick CI visibility
+            try {
+                Allure.step("Accessibility Scan Results");
+                Allure.parameter("Critical", String.valueOf(summary.getCriticalCount()));
+                Allure.parameter("Serious", String.valueOf(summary.getSeriousCount()));
+                Allure.parameter("Moderate", String.valueOf(summary.getModerateCount()));
+                Allure.parameter("Minor", String.valueOf(summary.getMinorCount()));
+            } catch (Exception e) {
+                LOG.warn("Failed to add Allure parameters", e);
+            }
 
             attachToAllure(summary);
 

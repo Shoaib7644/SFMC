@@ -54,17 +54,19 @@ public class Hooks {
     public void afterScenario(Scenario scenario) {
 
         try {
-
-            String screenshotName =
-                    scenario.getName().replaceAll(" ", "_");
+            String screenshotName = scenario.getName().replaceAll(" ", "_");
 
             if (scenario.isFailed()) {
-
                 scenario.log("Test Case Failed");
 
                 if (Constant.PAGE != null) {
+                    try {
+                        Constant.PAGE.waitForLoadState(com.microsoft.playwright.options.LoadState.NETWORKIDLE);
+                    } catch (Exception ignored) {}
 
-                    byte[] screenshot = Constant.PAGE.screenshot();
+                    byte[] screenshot = Constant.PAGE.screenshot(
+                        new com.microsoft.playwright.Page.ScreenshotOptions().setFullPage(true)
+                    );
 
                     scenario.attach(
                             screenshot,
@@ -85,7 +87,6 @@ public class Hooks {
             e.printStackTrace();
 
         } finally {
-
             try {
                 if (Constant.writingInExcel) {
                     ExcelUtils.writeInExcelFileUsingStream();

@@ -3,6 +3,7 @@ package com.salesforce.marketingcloud.steps;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.salesforce.marketingcloud.context.ValidationContext;
 import com.salesforce.marketingcloud.constant.Constant;
 import com.salesforce.marketingcloud.model.EmailValidationResult;
 import com.salesforce.marketingcloud.model.LinkResult;
@@ -15,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.options.LoadState;
 import io.qameta.allure.Allure;
 
 public class MailSteps {
@@ -83,23 +86,161 @@ public class MailSteps {
     public void validate_broken_links_from_email() throws Exception {
         String html = Constant.latestEmailHtml;
         if (html == null || html.isEmpty()) {
-            throw new AssertionError("No email HTML available to validate links");
+            String msg = "No email HTML available to validate links";
+            LOG.error(msg);
+            ValidationContext.addError(msg);
+            Allure.step(msg);
+            return;
         }
 
-        // extract links from html - reuse existing extractor
-        List<String> links = extractLinksFromHtml(html);
-        LOG.info("Found {} links in email", links.size());
+        try {
+            // extract links from html - reuse existing extractor
+            List<String> links = extractLinksFromHtml(html);
+            LOG.info("Found {} links in email", links.size());
 
-        EmailValidationResult result = SmartLinkValidator.validateLinks(Constant.latestEmailHtml == null ? "" : "EmailFromMailosaur", links);
+            EmailValidationResult result = SmartLinkValidator.validateLinks(Constant.latestEmailHtml == null ? "" : "EmailFromMailosaur", links);
 
-        // attach report first
-        SmartLinkValidator.attachReportToAllure(result);
+            // attach report first
+            SmartLinkValidator.attachReportToAllure(result);
 
-        if (result.getBrokenLinks() > 0) {
-            LOG.error("Broken links found: {}", result.getOnlyBrokenLinks().stream().map(LinkResult::getUrl).collect(Collectors.joining(", ")));
-            Assert.fail(result.generateSummary());
-        } else {
-            LOG.info("No broken links detected. Summary: {}", result.generateSummary());
+            if (result.getBrokenLinks() > 0) {
+                String err = "Broken links found: " + result.getOnlyBrokenLinks().stream().map(LinkResult::getUrl).collect(Collectors.joining(", "));
+                LOG.error(err);
+                ValidationContext.addError(err + " - " + result.generateSummary());
+                Allure.step(err);
+                Allure.addAttachment("Broken Links Failure", "text/plain", result.generateSummary(), ".txt");
+            } else {
+                LOG.info("No broken links detected. Summary: {}", result.generateSummary());
+            }
+        } catch (AssertionError ae) {
+            String msg = "Link validation assertion failed: " + ae.getMessage();
+            LOG.error(msg);
+            ValidationContext.addError(msg);
+            Allure.step(msg);
+        } catch (Exception e) {
+            String msg = "Failed to validate links from email: " + e.getMessage();
+            LOG.error(msg, e);
+            ValidationContext.addError(msg);
+            Allure.step(msg);
+            Allure.addAttachment("Broken Links Exception", "text/plain", msg + "\n" + e.toString(), ".txt");
+        }
+    }
+    
+    @Then("validate all images in the email are loading")
+    public void validate_images_loading() {
+        Page page = Constant.PAGE;
+        if (page == null) {
+            String msg = "Playwright Page is not initialized (Constant.PAGE is null)";
+            LOG.error(msg);
+            ValidationContext.addError(msg);
+            Allure.step(msg);
+            return;
+        }
+
+        try {
+            // wait for network idle so images have a chance to load
+            page.waitForLoadState(LoadState.NETWORKIDLE);
+
+            // Run an in-page async evaluation that checks <img> elements and computed background-image URLs
+            String evalScript = "(async () => {\n" +
+                    "  const broken = [];\n" +
+                    "  function normalizeUrl(u){ if(!u) return u; return u.replace(/(^\\\")|(\\\"$)/g, ''); }\n" +
+                    "  const imgs = Array.from(document.querySelectorAll('img'));\n" +
+                    "  for (let i=0;i<imgs.length;i++){\n" +
+                    "    const el = imgs[i];\n" +
+                    "    let src = el.currentSrc || el.src || el.getAttribute('src');\n" +
+                    "    if(!src) continue;\n" +
+                    "    src = normalizeUrl(src);\n" +
+                    "    try{\n" +
+                    "      const res = await new Promise(resolve => {\n" +
+                    "        const img = new Image();\n" +
+                    "        const timer = setTimeout(() => resolve(false), 5000);\n" +
+                    "        img.onload = () => { clearTimeout(timer); resolve(true); };\n" +
+                    "        img.onerror = () => { clearTimeout(timer); resolve(false); };\n" +
+                    "        try{ img.src = new URL(src, document.baseURI).href; } catch(e){ img.src = src; }\n" +
+                    "      });\n" +
+                    "      if(!res) broken.push({type:'img', src: src, alt: el.alt || ''});\n" +
+                    "    } catch(e){ broken.push({type:'img', src: src, alt: el.alt || '', error: String(e)}); }\n" +
+                    "  }\n" +
+                    "  // check background-image on elements\n" +
+                    "  const all = Array.from(document.querySelectorAll('*'));\n" +
+                    "  for (const el of all){\n" +
+                    "    try{\n" +
+                    "      const style = getComputedStyle(el);\n" +
+                    "      const bg = style.getPropertyValue('background-image');\n" +
+                    "      if(bg && bg !== 'none') {\n" +
+                    "        // extract url(s)\n" +
+                    "        const urls = [];\n" +
+                    "        bg.replace(/url\\(([^)]+)\\)/g, (m, u) => { urls.push(u.replace(/^\\\"|\\\"$/g,'')); return m; });\n" +
+                    "        for (const u of urls){\n" +
+                    "          let raw = u; if(!raw) continue; raw = raw.replace(/^\\\"|\\\"$/g,'');\n" +
+                    "          let resolved = raw; try{ resolved = new URL(raw, document.baseURI).href; } catch(e){}\n" +
+                    "          try{\n" +
+                    "            const res = await new Promise(resolve => {\n" +
+                    "              const img = new Image();\n" +
+                    "              const timer = setTimeout(() => resolve(false), 5000);\n" +
+                    "              img.onload = () => { clearTimeout(timer); resolve(true); };\n" +
+                    "              img.onerror = () => { clearTimeout(timer); resolve(false); };\n" +
+                    "              img.src = resolved;\n" +
+                    "            });\n" +
+                    "            if(!res) broken.push({type:'background', src: resolved, selector: el.tagName.toLowerCase(), class: el.className || ''});\n" +
+                    "          } catch(e){ broken.push({type:'background', src: resolved, selector: el.tagName.toLowerCase(), class: el.className || '', error: String(e)}); }\n" +
+                    "        }\n" +
+                    "      }\n" +
+                    "    } catch(e){}\n" +
+                    "  }\n" +
+                    "  return JSON.stringify(broken);\n" +
+                    "})()";
+
+            Object raw = page.evaluate(evalScript);
+            String json = raw == null ? "[]" : raw.toString();
+
+            // parse the returned JSON string
+            com.google.gson.Gson gson = new com.google.gson.Gson();
+            java.lang.reflect.Type listType = new com.google.gson.reflect.TypeToken<java.util.List<java.util.Map<String, Object>>>(){}.getType();
+            List<java.util.Map<String, Object>> broken = gson.fromJson(json, listType);
+
+            StringBuilder brokenBuilder = new StringBuilder();
+            int count = 0;
+            for (java.util.Map<String, Object> item : broken) {
+                count++;
+                String type = item.getOrDefault("type", "unknown").toString();
+                String src = item.getOrDefault("src", "").toString();
+                String alt = item.getOrDefault("alt", "").toString();
+                String selector = item.getOrDefault("selector", "").toString();
+                String cls = item.getOrDefault("class", "").toString();
+                String error = item.getOrDefault("error", "").toString();
+
+                String msg;
+                if ("img".equalsIgnoreCase(type)) {
+                    msg = String.format("Broken Image [%d] Src: %s | Alt: %s", count, src, alt);
+                } else if ("background".equalsIgnoreCase(type)) {
+                    msg = String.format("Broken background-image [%d] Url: %s | Element: %s.%s", count, src, selector, cls);
+                } else {
+                    msg = String.format("Broken resource [%d] Type: %s | Src: %s", count, type, src);
+                }
+                if (error != null && !error.isEmpty()) msg += " | Error: " + error;
+
+                ValidationContext.addError(msg);
+                LOG.error(msg);
+                brokenBuilder.append(msg).append('\n');
+            }
+
+            if (count > 0) {
+                String brokenList = brokenBuilder.toString();
+                Allure.step("Some images/background images failed to load");
+                Allure.addAttachment("Broken Images Summary", "text/plain", brokenList, ".txt");
+            } else {
+                Allure.step("All images and background images loaded successfully");
+                LOG.info("All images and background images loaded successfully");
+            }
+
+        } catch (Exception e) {
+            String msg = "Failed to validate images: " + e.getMessage();
+            LOG.error(msg, e);
+            ValidationContext.addError(msg);
+            Allure.step(msg);
+            Allure.addAttachment("Image Validation Exception", "text/plain", msg + "\n" + e.toString(), ".txt");
         }
     }
 
