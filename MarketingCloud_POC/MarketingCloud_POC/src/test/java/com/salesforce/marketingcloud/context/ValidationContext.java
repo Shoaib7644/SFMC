@@ -1,12 +1,15 @@
 package com.salesforce.marketingcloud.context;
 
+// no import aliasing - reference framework context by fully qualified name
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
- * Thread-safe validation context for accumulating soft assertion failures per scenario/thread.
+ * Backwards-compatible test ValidationContext shim.
+ * Preserves the existing static API used by step classes while delegating
+ * to the framework ValidationContext singleton so reporting remains deterministic.
  */
 public final class ValidationContext {
 
@@ -16,8 +19,15 @@ public final class ValidationContext {
 
     public static void addError(String message) {
         if (message == null) return;
+        // store in thread-local list (backwards compat)
         List<String> list = validationErrors.get();
         list.add(message);
+        // also register as a framework validation result so it shows up in deterministic report mapping
+        try {
+            framework.validation.context.ValidationContext.getInstance().addResult("Runtime Error", false, message, "CRITICAL");
+        } catch (Throwable t) {
+            // swallow to avoid cascading failures in test hooks
+        }
     }
 
     public static List<String> getErrors() {
@@ -33,6 +43,12 @@ public final class ValidationContext {
     public static void clear() {
         List<String> list = validationErrors.get();
         list.clear();
+        // clear framework validation context as well to avoid cross-scenario leakage
+        try {
+            framework.validation.context.ValidationContext.getInstance().clear();
+        } catch (Throwable t) {
+            // ignore
+        }
     }
 
     public static String combinedMessage() {

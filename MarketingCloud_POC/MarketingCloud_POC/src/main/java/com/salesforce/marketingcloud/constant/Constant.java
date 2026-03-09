@@ -280,4 +280,9 @@ public class Constant {
 	 * Latest email HTML fetched from Mailosaur
 	 */
 	public static String latestEmailHtml;
+
+	/**
+	 * Latest email name selected in scenario (for reporting)
+	 */
+	public static String latestEmailName;
 }

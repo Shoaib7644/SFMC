@@ -1,0 +1,23 @@
+=== Early ValidationContext Snapshot ===
+Constant.PAGE present: true
+latestEmailHtml length: 6971
+--- ValidationResult entries ---
+ValidationResult{item='Runtime Error', passed=false, severity='CRITICAL', notes='Broken Image [1] Src: https://via.placeholder.com/offline-image-300x380 | Alt: Wide Leg Trousers'}
+ValidationResult{item='Subject Line', passed=true, severity='INFO', notes='Subject OK (47 chars): 'Your exclusive Spring 2026 preview is here, Koa''}
+ValidationResult{item='Preheader Text', passed=true, severity='INFO', notes='Preheader OK (45 chars) [<meta name="preheader">]: 'Early access opens now — 20% off for members.''}
+ValidationResult{item='Subject Line & Preheader', passed=true, severity='INFO', notes='Subject and preheader validation complete'}
+ValidationResult{item='Color Contrast', passed=false, severity='CRITICAL', notes='2 violation(s) detected'}
+ValidationResult{item='Heading Hierarchy', passed=false, severity='MAJOR', notes='1 violation(s) detected'}
+ValidationResult{item='Landmark structure', passed=false, severity='MAJOR', notes='1 violation(s) detected'}
+ValidationResult{item='region', passed=false, severity='MAJOR', notes='14 violation(s) detected'}
+ValidationResult{item='Accessibility (axe)', passed=false, severity='MAJOR', notes='Axe violations detected (4 rule(s), 18 total elements affected) — see Axe HTML report'}
+ValidationResult{item='HTTP Link Status', passed=true, severity='INFO', notes='All HTTP links returned OK status (4 tracking link(s) skipped)'}
+ValidationResult{item='Image Loading Status', passed=false, severity='CRITICAL', notes='https://via.placeholder.com/offline-image-300x380 (error:via.placeholder.com)'}
+ValidationResult{item='Image Alt Text Compliance', passed=true, severity='INFO', notes='All images have alt text'}
+ValidationResult{item='SFMC Personalization Strings', passed=true, severity='INFO', notes='No unresolved SFMC tokens detected'}
+ValidationResult{item='Mobile Responsiveness', passed=false, severity='MAJOR', notes='No responsive CSS detected: Missing meta viewport tag; No media queries found in <style> blocks'}
+ValidationResult{item='Unsubscribe Link', passed=true, severity='INFO', notes='Unsubscribe/opt-out link or token found: https://cl.s12.exct.net/?qs=eyjkzwtjzci6ijlhyzmznzgyltnjzwitngjizs04mjeyltazyme0mdixmdfkziisimrla1zlcnnpb24iojesiml2ijoiumwvk0o5cnhtzjhku29qrvhuceplut09iiwiy2lwagvyvgv4dci6ilk4atlqb0jpm25umvc5dmhzakxqdhpztvd5ymtdsghyelnkdthxt1npamthcgnjzgjvmgjknulvchnonuvlcm92me5xnwjjmk1rcefyuxfcyit6ym9squ1qre5vwitcn2hrwmyvawzhofvul0nvcur4rju2u1nrpsisimf1dghuywcioijyuxfcyit6ym9squ1qre5vwitcn2hnpt0ifq%3d%3d'}
+ValidationResult{item='Table Accessibility', passed=false, severity='MAJOR', notes='Table missing <th> headers'}
+
+--- Aggregated Model ---
+ValidationResultsModel{languageAttribute=FieldResult{status='PASS', notes='lang attribute present: en', evidence='html.lang=en'}, subjectLine=FieldResult{status='PASS', notes='Subject OK (47 chars): 'Your exclusive Spring 2026 preview is here, Koa'', evidence=''}, preheader=FieldResult{status='PASS', notes='Preheader OK (45 chars) [<meta name="preheader">]: 'Early access opens now — 20% off for members.'', evidence=''}, altText=null, decorativeImages=FieldResult{status='PASS', notes='Decorative images OK', evidence=''}, headingHierarchy=FieldResult{status='WARN', notes='Landmark/region issue: Ensures all page content is contained by landmarks (region)', evidence='region'}, colorContrast=FieldResult{status='FAIL', notes='Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds (color-contrast)', evidence='color-contrast'}, descriptiveLinks=FieldResult{status='FAIL', notes='Non-descriptive link text found', evidence='https://cl.s12.exct.net/?qs=eyJkZWtJZCI6ImU3MDFhMTc2LTQ0MmYtNGU5OS1iNTA3LWRkZjU1ODMwNjJlMSIsImRla1ZlcnNpb24iOjEsIml2IjoiSVpPR2ZXR2JSMXY2bU55ZXJxTHR4dz09IiwiY2lwaGVyVGV4dCI6InBUZ2FaRE1KRWtCWGk1YVZIMUFLc25XYVc0TExLN2c3TzdCWUtRTHBRWlZFbnJabWJIYkJXKzJBS3ZPTVNwWWdlUTVTeTQyMGRZSzdleU5WbWxnN0hTYmVNYmNiSVpPR2ZXR2JSMXY2bU55ZXJxTHR4dz09IiwiYXV0aFRhZyI6InRIV0N1M3NqVlpwWU94MG0zakczR3c9PSJ9 (Click Here)'}, buttonAccessibility=FieldResult{status='PASS', notes='No violations detected', evidence=''}, fontReadability=FieldResult{status='PASS', notes='Fonts OK', evidence=''}, httpLinks=null, imageLoading=null, personalizationStrings=null, tableAccessibility=FieldResult{status='FAIL', notes='Table missing <th> headers', evidence=''}, mobileResponsiveness=null, unsubscribeLink=FieldResult{status='PASS', notes='Unsubscribe found', evidence=''}}

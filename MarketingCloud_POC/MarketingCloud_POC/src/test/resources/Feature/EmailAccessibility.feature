@@ -43,9 +43,12 @@ Feature: Email accessibility validation
     Then validate broken links from email
     And validate email accessibility compliance
     Then validate all images in the email are loading
+    And Generate and log the final validation summary report
     And report all validation failures
+    
     
  Examples: 
       | EmailName     | ReceiverEmail                     |
-      | "Sample Mail - Automation Test 1" | "sample@suleepqt.mailosaur.net"  |
-      | "Perfectly Imperfect Email For Testing" | "sample@suleepqt.mailosaur.net"  |
+      | "Spring Lookbook 2026" | "sample@suleepqt.mailosaur.net"  |
+      ##| "Sample Mail - Automation Test 1" | "sample@suleepqt.mailosaur.net"  |
+      ##| "Perfectly Imperfect Email For Testing" | "sample@suleepqt.mailosaur.net"  |

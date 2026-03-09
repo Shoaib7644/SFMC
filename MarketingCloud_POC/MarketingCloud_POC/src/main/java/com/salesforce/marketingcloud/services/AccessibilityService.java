@@ -21,6 +21,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.lang.reflect.Type;
+
+// new imports for framework validation context and adapter
+import framework.validation.context.ValidationContext;
+import framework.validation.reporting.AccessibilityReportAdapter;
+import framework.validation.model.ValidationResultsModel;
+
+// Import TypeToken for safe Gson deserialization
+import com.google.gson.reflect.TypeToken;
 
 public final class AccessibilityService {
 
@@ -74,6 +83,46 @@ public final class AccessibilityService {
 
             // Structured logging - human readable and enterprise friendly
             logStructuredAccessibilityReport(result, summary);
+
+            // Populate framework ValidationContext so standalone AccessibilityService runs create structured results
+            try {
+                ValidationContext ctx = ValidationContext.getInstance();
+
+                // set raw violations list (as generic objects) by parsing the rawJson into a Map and extracting "violations"
+                List<Object> violationsRaw = new ArrayList<>();
+                if (rawJson != null && !rawJson.isBlank()) {
+                    // Use TypeToken to avoid unchecked cast warnings
+                    Type mapType = new TypeToken<Map<String, Object>>(){}.getType();
+                    Map<String, Object> root = GSON.fromJson(rawJson, mapType);
+                    Object viol = root == null ? null : root.get("violations");
+                    if (viol instanceof List) {
+                        for (Object item : (List<?>) viol) {
+                            violationsRaw.add(item);
+                        }
+                    }
+                }
+                ctx.setAxeViolations(violationsRaw);
+
+                // set a simple impact summary map
+                Map<String, Integer> summaryMap = new LinkedHashMap<>();
+                summaryMap.put("critical", summary.getCriticalCount());
+                summaryMap.put("serious", summary.getSeriousCount());
+                summaryMap.put("moderate", summary.getModerateCount());
+                summaryMap.put("minor", summary.getMinorCount());
+                ctx.setAxeSummary(summaryMap);
+
+                // use adapter to map axe violations into the aggregated ValidationResultsModel and also populate per-rule ValidationResult entries
+                AccessibilityReportAdapter adapter = new AccessibilityReportAdapter(ctx);
+                ValidationResultsModel agg = adapter.adapt();
+                ctx.setAggregatedModel(agg);
+
+                // overall accessibility pass/fail
+                boolean passed = summary.getTotalViolations() == 0;
+                ctx.addResult("Accessibility (axe)", passed, passed ? "No axe violations for mapped rules" : "Axe violations detected - check detailed items", passed ? "INFO" : "MAJOR");
+
+            } catch (Exception e) {
+                LOG.warn("Failed to populate framework ValidationContext from AccessibilityService: {}", e.getMessage());
+            }
 
             // Attach executive summary HTML to Allure
             try {
