@@ -1,10 +1,8 @@
 package com.salesforce.marketingcloud.reporting;
 
 import com.salesforce.marketingcloud.model.accessibility.AccessibilitySummary;
-import com.salesforce.marketingcloud.model.accessibility.AxeViolation;
 import com.salesforce.marketingcloud.model.accessibility.AxeNode;
-
-import java.util.List;
+import com.salesforce.marketingcloud.model.accessibility.AxeViolation;
 
 /**
  * Builds an executive HTML report (summary) for accessibility scans.

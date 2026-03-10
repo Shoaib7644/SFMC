@@ -19,13 +19,12 @@ Feature: Email accessibility validation
     When Get email from receiver's inbox for <EmailName>
     And Load the latest email HTML into the browser
     Then validate email accessibility compliance
-    
- Examples: 
-      | EmailName     | ReceiverEmail                     |
-      | "Sample Mail - Automation Test 1" | "sample@suleepqt.mailosaur.net"  |
-      
-      
-   @E2E
+
+    Examples: 
+      | EmailName                         | ReceiverEmail                   |
+      | "Sample Mail - Automation Test 1" | "sample@suleepqt.mailosaur.net" |
+
+  @E2E
   Scenario Outline: E2E : Validate email accessibility and broken links
     Given User login into the Salesforce
     And User selects the "Content Builder" option from "Salesforce Home" page
@@ -45,10 +44,9 @@ Feature: Email accessibility validation
     Then validate all images in the email are loading
     And Generate and log the final validation summary report
     And report all validation failures
-    
-    
- Examples: 
-      | EmailName     | ReceiverEmail                     |
-      | "Spring Lookbook 2026" | "sample@suleepqt.mailosaur.net"  |
-      ##| "Sample Mail - Automation Test 1" | "sample@suleepqt.mailosaur.net"  |
-      ##| "Perfectly Imperfect Email For Testing" | "sample@suleepqt.mailosaur.net"  |
+
+    Examples: 
+      | EmailName                               | ReceiverEmail                   |
+      | "Spring Lookbook 2026"                  | "sample@suleepqt.mailosaur.net" |
+      #| "Sample Mail - Automation Test 1"       | "sample@suleepqt.mailosaur.net" |
+      #| "Perfectly Imperfect Email For Testing" | "sample@suleepqt.mailosaur.net" |

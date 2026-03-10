@@ -5,8 +5,9 @@ import com.mailosaur.models.Message;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
 import com.salesforce.marketingcloud.constant.Constant;
-import framework.validation.context.ValidationContext;
-import framework.validation.services.EmailValidationService;
+import com.salesforce.marketingcloud.context.ValidationContext;
+import com.salesforce.marketingcloud.services.EmailValidationService;
+
 import io.cucumber.java.en.Then;
 import io.qameta.allure.Allure;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class AccessibilitySteps {
         if (html == null || html.trim().isEmpty()) {
             String msg = "No email HTML found in scenario context (Constant.latestEmailHtml is null/empty)";
             LOG.error(msg);
-            com.salesforce.marketingcloud.context.ValidationContext.addError(msg);
+            com.salesforce.marketingcloud.context.ValidationContextPage.addError(msg);
             Allure.step(msg);
             return;
         }
@@ -54,7 +55,7 @@ public class AccessibilitySteps {
         if (page == null) {
             String msg = "Playwright Page is not initialized (Constant.PAGE is null)";
             LOG.error(msg);
-            com.salesforce.marketingcloud.context.ValidationContext.addError(msg);
+            com.salesforce.marketingcloud.context.ValidationContextPage.addError(msg);
             Allure.step(msg);
             return;
         }
@@ -98,7 +99,7 @@ public class AccessibilitySteps {
             String msg = "Failed to execute email validation suite: " + e.getMessage();
             LOG.error(msg, e);
             // Record as soft failure so "report all validation failures" step surfaces it.
-            com.salesforce.marketingcloud.context.ValidationContext.addError(msg);
+            com.salesforce.marketingcloud.context.ValidationContextPage.addError(msg);
             Allure.step(msg);
             Allure.addAttachment("Validation Exception", "text/plain",
                     msg + "\n" + e.toString(), ".txt");

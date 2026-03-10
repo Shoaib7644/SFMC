@@ -1,6 +1,6 @@
 package com.salesforce.marketingcloud.steps;
 
-import com.salesforce.marketingcloud.context.ValidationContext;
+import com.salesforce.marketingcloud.context.ValidationContextPage;
 import io.cucumber.java.en.Then;
 import io.qameta.allure.Allure;
 import org.junit.Assert;
@@ -16,17 +16,17 @@ public class ValidationReportingSteps {
 
     @Then("report all validation failures")
     public void reportAllValidationFailures() {
-        if (ValidationContext.hasErrors()) {
-            String combined = ValidationContext.combinedMessage();
+        if (ValidationContextPage.hasErrors()) {
+            String combined = ValidationContextPage.combinedMessage();
             LOG.error("Validation errors found:\n{}", combined);
             Allure.step("Validation errors found");
             Allure.addAttachment("All Validation Failures", "text/plain", combined, ".txt");
             // Clear after reporting to avoid leakage
-            ValidationContext.clear();
+            ValidationContextPage.clear();
             Assert.fail("Validation failures:\n" + combined);
         } else {
             Allure.step("No validation failures recorded");
-            ValidationContext.clear();
+            ValidationContextPage.clear();
         }
     }
 }

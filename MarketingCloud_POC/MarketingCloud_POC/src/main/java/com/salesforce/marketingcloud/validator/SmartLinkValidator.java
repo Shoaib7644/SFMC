@@ -1,13 +1,13 @@
 package com.salesforce.marketingcloud.validator;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,8 +15,6 @@ import com.salesforce.marketingcloud.model.EmailValidationResult;
 import com.salesforce.marketingcloud.model.LinkResult;
 
 import io.qameta.allure.Allure;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Validates links found inside email content and prepares a structured report.

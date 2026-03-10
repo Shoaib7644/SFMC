@@ -3,21 +3,20 @@ package com.salesforce.marketingcloud.steps;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.salesforce.marketingcloud.context.ValidationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.LoadState;
 import com.salesforce.marketingcloud.constant.Constant;
+import com.salesforce.marketingcloud.context.ValidationContextPage;
 import com.salesforce.marketingcloud.model.EmailValidationResult;
 import com.salesforce.marketingcloud.model.LinkResult;
-import com.salesforce.marketingcloud.validator.SmartLinkValidator;
 import com.salesforce.marketingcloud.utils.MailosaurUtils;
+import com.salesforce.marketingcloud.validator.SmartLinkValidator;
 
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.junit.Assert;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.ElementHandle;
-import com.microsoft.playwright.options.LoadState;
 import io.qameta.allure.Allure;
 
 public class MailSteps {
@@ -113,7 +112,7 @@ public class MailSteps {
         if (html == null || html.isEmpty()) {
             String msg = "No email HTML available to validate links";
             LOG.error(msg);
-            ValidationContext.addError(msg);
+            ValidationContextPage.addError(msg);
             Allure.step(msg);
             return;
         }
@@ -139,7 +138,7 @@ public class MailSteps {
                                 .map(LinkResult::getUrl)
                                 .collect(Collectors.joining(", "));
                 LOG.warn(err); // warn, not error — real broken-link FAIL comes from BrokenLinkValidator
-                ValidationContext.addError(err + " - " + result.generateSummary());
+                ValidationContextPage.addError(err + " - " + result.generateSummary());
                 Allure.step(err);
                 Allure.addAttachment("Broken Links Failure", "text/plain", result.generateSummary(), ".txt");
             } else {
@@ -149,12 +148,12 @@ public class MailSteps {
         } catch (AssertionError ae) {
             String msg = "Link validation assertion failed: " + ae.getMessage();
             LOG.error(msg);
-            ValidationContext.addError(msg);
+            ValidationContextPage.addError(msg);
             Allure.step(msg);
         } catch (Exception e) {
             String msg = "Failed to validate links from email: " + e.getMessage();
             LOG.error(msg, e);
-            ValidationContext.addError(msg);
+            ValidationContextPage.addError(msg);
             Allure.step(msg);
             Allure.addAttachment("Broken Links Exception", "text/plain", msg + "\n" + e.toString(), ".txt");
         }
@@ -184,7 +183,7 @@ public class MailSteps {
         if (page == null) {
             String msg = "Playwright Page is not initialized (Constant.PAGE is null)";
             LOG.error(msg);
-            ValidationContext.addError(msg);
+            ValidationContextPage.addError(msg);
             Allure.step(msg);
             return;
         }
@@ -273,7 +272,7 @@ public class MailSteps {
                 // Soft-assertion only — record in com.salesforce ValidationContext.
                 // Do NOT write to framework ValidationContext (that was the source of
                 // the "Runtime Error" key pollution in the debug log).
-                ValidationContext.addError(msg);
+                ValidationContextPage.addError(msg);
                 LOG.warn(msg); // warn not error — this is a test finding, not a system error
                 brokenBuilder.append(msg).append('\n');
             }
@@ -290,7 +289,7 @@ public class MailSteps {
         } catch (Exception e) {
             String msg = "Failed to validate images: " + e.getMessage();
             LOG.error(msg, e);
-            ValidationContext.addError(msg);
+            ValidationContextPage.addError(msg);
             Allure.step(msg);
             Allure.addAttachment("Image Validation Exception", "text/plain",
                     msg + "\n" + e.toString(), ".txt");

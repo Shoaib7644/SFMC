@@ -261,12 +261,6 @@ public class Constant {
 	public static boolean writingInExcel = false;
 	
 	/**
-	 * Constant used to store various statuses
-	 */
-	public static final String activeStatus = "Active", newStatus = "New", approvedStatus = "Approved", renewableSubscriptionType = "Renewable", activatedStatus = "Activated",
-			closedStatus = "Closed", pendingDeleteStatus = "PendingDelete", amendStatus = "Amend", renewalStatus = "Renewal";
-	
-	/**
 	 * Constant used to Store Product Prices
 	 */
 	public static Map<String, Map<String, Object>> productSpecs = new HashMap<String, Map<String, Object>>();

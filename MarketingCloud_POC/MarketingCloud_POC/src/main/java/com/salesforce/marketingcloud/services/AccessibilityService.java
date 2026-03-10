@@ -2,11 +2,14 @@ package com.salesforce.marketingcloud.services;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.salesforce.marketingcloud.context.ValidationContext;
+import com.salesforce.marketingcloud.model.ValidationResultsModel;
 import com.salesforce.marketingcloud.model.accessibility.AccessibilitySummary;
 import com.salesforce.marketingcloud.model.accessibility.AxeResult;
 import com.salesforce.marketingcloud.model.accessibility.AxeViolation;
 import com.salesforce.marketingcloud.model.accessibility.AxeNode;
 import com.salesforce.marketingcloud.reporting.AccessibilityHtmlReportBuilder;
+import com.salesforce.marketingcloud.reporting.AccessibilityReportAdapter;
 import com.salesforce.marketingcloud.utils.accessibility.AxeAccessibilityUtil;
 import com.salesforce.marketingcloud.utils.accessibility.AccessibilityException;
 import com.microsoft.playwright.Page;
@@ -22,11 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.lang.reflect.Type;
-
-// new imports for framework validation context and adapter
-import framework.validation.context.ValidationContext;
-import framework.validation.reporting.AccessibilityReportAdapter;
-import framework.validation.model.ValidationResultsModel;
 
 // Import TypeToken for safe Gson deserialization
 import com.google.gson.reflect.TypeToken;

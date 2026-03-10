@@ -1,11 +1,12 @@
 package com.salesforce.marketingcloud.steps;
 
 import com.salesforce.marketingcloud.constant.Constant;
+import com.salesforce.marketingcloud.context.ValidationContext;
+import com.salesforce.marketingcloud.model.ValidationResult;
+import com.salesforce.marketingcloud.model.ValidationResultsModel;
 import com.salesforce.marketingcloud.reporting.WordReportGenerator;
-import framework.validation.context.ValidationContext;
-import framework.validation.model.ValidationResult;
-import framework.validation.model.ValidationResultsModel;
-import framework.validation.services.EmailValidationService;
+import com.salesforce.marketingcloud.services.EmailValidationService;
+
 import io.cucumber.java.en.Then;
 import io.qameta.allure.Allure;
 import org.slf4j.Logger;

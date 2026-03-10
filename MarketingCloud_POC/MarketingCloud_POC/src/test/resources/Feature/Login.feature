@@ -17,6 +17,6 @@ Feature: SFMC Email Testing POC
     Then validate broken links from email
 
     Examples: 
-      | EmailName     | ReceiverEmail                     |
+      | EmailName                         | ReceiverEmail                     |
       | "Sample Mail - Automation Test 1" | "sample@suleepqt.mailosaur.net"   |
-    ##  | "Sample HTML" | "test_marketingcloud@yopmail.com" |
+      #| "Sample HTML"                     | "test_marketingcloud@yopmail.com" |
