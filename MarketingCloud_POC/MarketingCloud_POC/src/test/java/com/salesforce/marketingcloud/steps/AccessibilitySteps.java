@@ -12,24 +12,6 @@ import io.qameta.allure.Allure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Cucumber step: "validate email accessibility compliance"
- *
- * ROOT CAUSE FIX:
- *   The original class used AccessibilityService.runAndSummarize(page) — a legacy runner that
- *   wrote results into com.salesforce.marketingcloud.context.ValidationContext (a completely
- *   different class from framework.validation.context.ValidationContext).
- *   WordReportGenerator reads from the *framework* ValidationContext, which was never populated,
- *   causing every report row to show "NOT EXECUTED".
- *
- *   Fixed: replaced legacy AccessibilityService call with EmailValidationService.runAllValidations()
- *   which writes all 16 per-field ValidationResult entries into framework.validation.context.ValidationContext —
- *   the same instance that WordReportGenerator and ReportSteps read from.
- *
- *   The com.salesforce.marketingcloud.context.ValidationContext (used by ValidationReportingSteps
- *   for soft-assertion error collection) is still written to via ValidationContext.addError() for
- *   any hard failures, so the "report all validation failures" step continues to work correctly.
- */
 public class AccessibilitySteps {
 
     private static final Logger LOG = LoggerFactory.getLogger(AccessibilitySteps.class);

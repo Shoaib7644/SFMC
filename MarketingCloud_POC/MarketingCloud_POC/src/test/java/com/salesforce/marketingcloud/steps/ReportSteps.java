@@ -29,27 +29,6 @@ public class ReportSteps {
         try {
             ValidationContext ctx = ValidationContext.getInstance();
 
-            // ── Guard: run validations on-demand if context is empty ──────────────────────────
-            //
-            // BUG FIX (ReportSteps):
-            //   The old guard checked BOTH hasResults AND hasAggregated:
-            //     if (!hasResults && !hasAggregated) { run on-demand }
-            //
-            //   After the AccessibilityReportAdapter fix, the axe run in AccessibilitySteps
-            //   partially populates the aggregated model (colorContrast, headingHierarchy, etc.)
-            //   via the adapter. So hasAggregated became TRUE even though most validators never
-            //   ran — and the on-demand fallback was skipped entirely.
-            //
-            //   Fixed: the guard now only checks hasResults (the named ValidationResult entries
-            //   in context). A fully-run EmailValidationService always produces 16+ entries.
-            //   A partial axe-only run produces 2 entries (Runtime Error + Accessibility (axe)).
-            //   We require at least 10 entries to consider the context adequately populated.
-            //   If fewer exist, re-run all validations to fill the gaps.
-            //
-            //   In practice, with the fixed AccessibilitySteps, this fallback should never
-            //   trigger — all 16 entries will already be in context before this step runs.
-            //   The threshold guards against partial-run edge cases.
-            //
             int resultCount = ctx.getResults().size();
             boolean hasAdequateResults = resultCount >= 10;
 

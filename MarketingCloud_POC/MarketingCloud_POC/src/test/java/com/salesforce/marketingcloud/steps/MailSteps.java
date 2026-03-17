@@ -10,8 +10,11 @@ import com.salesforce.marketingcloud.model.LinkResult;
 import com.salesforce.marketingcloud.validator.SmartLinkValidator;
 import com.salesforce.marketingcloud.utils.MailosaurUtils;
 
+import com.salesforce.marketingcloud.pageobjects.*;
+
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.java.en.Given;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Assert;
@@ -40,7 +43,7 @@ public class MailSteps {
             throw new AssertionError("Email not received within timeout: " + e.getMessage());
         }
     }
-
+    
     @When("Load the latest email HTML into the browser")
     public void load_latest_email_html_into_browser() {
         String html = Constant.latestEmailHtml;
@@ -84,29 +87,7 @@ public class MailSteps {
         }
     }
 
-    // ── FIXED: validate broken links from email ───────────────────────────────────────────────
-    //
-    // WHAT CHANGED AND WHY:
-    //
-    // The old implementation called SmartLinkValidator.validateLinks() and then wrote errors
-    // into com.salesforce.marketingcloud.context.ValidationContext via ValidationContext.addError().
-    // This is correct for soft-assertion collection (the "report all validation failures" step
-    // reads from this context).
-    //
-    // BUT it also had a side effect: the broken-links error string was being picked up by
-    // legacy code elsewhere and written into framework.validation.context.ValidationContext
-    // under the key "Runtime Error" — polluting the debug log and making it look like a
-    // system crash rather than a validation finding.
-    //
-    // The fix: this step still runs SmartLinkValidator (for the Allure HTML report it generates)
-    // and still calls ValidationContext.addError() for soft-assertion collection — but it no
-    // longer writes anything to framework.validation.context.ValidationContext directly.
-    //
-    // The actual "HTTP Link Status" result in the audit report comes from
-    // EmailValidationService.runAllValidations() → BrokenLinkValidator (called by AccessibilitySteps).
-    // BrokenLinkValidator now also skips SFMC tracking domains (cl.s12.exct.net etc.) so those
-    // will no longer appear as false-positive broken links.
-    //
+    
     @Then("validate broken links from email")
     public void validate_broken_links_from_email() throws Exception {
         String html = Constant.latestEmailHtml;
@@ -129,11 +110,7 @@ public class MailSteps {
             SmartLinkValidator.attachReportToAllure(result);
 
             if (result.getBrokenLinks() > 0) {
-                // Soft-assertion only — do NOT write to framework ValidationContext.
-                // The "Runtime Error" key was appearing because something downstream
-                // was picking up this error string and calling framework context.addResult().
-                // We record it only in the com.salesforce ValidationContext for the
-                // "report all validation failures" step.
+                
                 String err = "Broken links found: "
                         + result.getOnlyBrokenLinks().stream()
                                 .map(LinkResult::getUrl)
@@ -160,24 +137,7 @@ public class MailSteps {
         }
     }
 
-    // ── FIXED: validate all images in the email are loading ───────────────────────────────────
-    //
-    // WHAT CHANGED AND WHY:
-    //
-    // The old implementation detected broken images and then called:
-    //     ValidationContext.addError("Broken Image [1] Src: https://via.placeholder.com/150 | Alt: ...")
-    //
-    // ValidationContext.addError() writes into com.salesforce.marketingcloud.context.ValidationContext.
-    // However, something in the pipeline was also writing those same messages into
-    // framework.validation.context.ValidationContext under the key "Runtime Error",
-    // which appeared in the debug log as if a system error had occurred.
-    //
-    // The fix: broken image findings are still recorded as soft-assertion errors in
-    // com.salesforce ValidationContext (for "report all validation failures"), and the
-    // per-image detail is still attached to Allure. But we do NOT write to framework
-    // ValidationContext at all — the "Image Loading Status" audit row is owned by
-    // EmailValidationService → ImageValidator (called by AccessibilitySteps).
-    //
+    
     @Then("validate all images in the email are loading")
     public void validate_images_loading() {
         Page page = Constant.PAGE;

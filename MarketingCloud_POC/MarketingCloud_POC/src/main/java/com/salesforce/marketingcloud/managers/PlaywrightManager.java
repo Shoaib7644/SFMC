@@ -2,6 +2,7 @@ package com.salesforce.marketingcloud.managers;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.microsoft.playwright.Browser;
@@ -62,11 +63,14 @@ public class PlaywrightManager {
 				return Constant.BROWSERCONTEXT.newPage();
 
 			case CHROME:
-				lOptions.channel = "chrome";
-				Constant.BROWSER = Constant.PLAYWRIGHT.chromium().launch(lOptions);
-				Constant.BROWSERCONTEXT = Constant.BROWSER.newContext(new Browser.NewContextOptions().setViewportSize(new ViewportSize(width, height))
-						.setStorageStatePath(Paths.get(Constant.SFAuthFileJSONPath)));
-				return Constant.BROWSERCONTEXT.newPage();
+			    lOptions.channel = "chrome";
+			    Constant.BROWSER = Constant.PLAYWRIGHT.chromium().launch(lOptions);
+			    // Added Permissions for clipboard access
+			    Constant.BROWSERCONTEXT = Constant.BROWSER.newContext(new Browser.NewContextOptions()
+			            .setViewportSize(new ViewportSize(width, height))
+			            .setStorageStatePath(Paths.get(Constant.SFAuthFileJSONPath))
+			            .setPermissions(Arrays.asList("clipboard-read", "clipboard-write"))); 
+			    return Constant.BROWSERCONTEXT.newPage();
 				
 			case WEBKIT:
 				Constant.BROWSER = Constant.PLAYWRIGHT.webkit().launch(lOptions);

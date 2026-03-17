@@ -6,6 +6,7 @@ import com.microsoft.playwright.FrameLocator;
 import com.salesforce.marketingcloud.constant.Constant;
 import com.salesforce.marketingcloud.exception.CustomException;
 import com.salesforce.marketingcloud.pageobjects.ContentBuilderPage;
+import com.salesforce.marketingcloud.pageobjects.MailosaurPage;
 import com.salesforce.marketingcloud.utils.CommonUtils;
 import com.salesforce.marketingcloud.utils.PlaywrightUtils;
 
@@ -17,6 +18,7 @@ import io.qameta.allure.Allure;
 public class StepFile {
 
 	ContentBuilderPage contentBuilderPage = new ContentBuilderPage();
+	MailosaurPage  mailasaurPage = new MailosaurPage();
 
     private static final Logger LOG = LoggerFactory.getLogger(StepFile.class);
 	
@@ -32,6 +34,19 @@ public class StepFile {
 		Constant.env = "QA";
 	    CommonUtils.salesforcelogin();
 	}
+	
+	// New step for UI reading
+	@Given("User reads the {string} body from {string} page")
+	public void user_reads_the_body_from_page(String emailType, String pageName) {
+	    mailasaurPage.readEmailFromWeb();
+	}
+
+//	// Updated existing step to store the subject for the UI finder
+//	@Given("User selects the {string} email option from {string} page")
+//	public void user_select_on_the_email_option_from_pages(String email, String page) {
+//	    Constant.emailSubject = email; // Required for Mailosaur UI dynamic locator
+//	    contentBuilderPage.selectEmail(email);
+//	}
 	
 	@Given("User swtiches to {string} App")
 	public void user_switches_to_app(String appName) throws Throwable {
@@ -207,6 +222,7 @@ public class StepFile {
  	
  	@Given("User selects the {string} email option from {string} page")
  	public void user_select_on_the_email_option_from_page(String email, String string2) {
+ 		Constant.emailSubject = email;
  	    contentBuilderPage.selectEmail(email);
  	}
  	

@@ -285,4 +285,8 @@ public class Constant {
 	 * Latest email name selected in scenario (for reporting)
 	 */
 	public static String latestEmailName;
+	
+	/**Email Subject Sent to Mailosaur*/
+	
+public static String emailSubject;
 }
