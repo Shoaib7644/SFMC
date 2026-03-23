@@ -38,7 +38,7 @@ public class StepFile {
 	// New step for UI reading
 	@Given("User reads the {string} body from {string} page")
 	public void user_reads_the_body_from_page(String emailType, String pageName) {
-	    mailasaurPage.readEmailFromWeb();
+			    mailasaurPage.readEmailFromWeb();
 	}
 
 //	// Updated existing step to store the subject for the UI finder
@@ -223,6 +223,7 @@ public class StepFile {
  	@Given("User selects the {string} email option from {string} page")
  	public void user_select_on_the_email_option_from_page(String email, String string2) {
  		Constant.emailSubject = email;
+ 		Constant.latestEmailName = email;
  	    contentBuilderPage.selectEmail(email);
  	}
  	

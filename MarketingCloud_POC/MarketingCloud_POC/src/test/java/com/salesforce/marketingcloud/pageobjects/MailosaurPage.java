@@ -26,6 +26,11 @@ public class MailosaurPage {
 	        PlaywrightUtils.waitForAnElement(PlaywrightUtils.getElement("SFMC Emails", Constant.PAGE));
 	        PlaywrightUtils.click(PlaywrightUtils.getElement("SFMC Emails", Constant.PAGE));
 	        
+	        PlaywrightUtils.waitForMoreSec(10);
+	        
+	        PlaywrightUtils.waitForAnElement(PlaywrightUtils.getElement("refresh", Constant.PAGE));
+	        PlaywrightUtils.click(PlaywrightUtils.getElement("refresh", Constant.PAGE));
+	        
 	        Locator recentEmail = PlaywrightUtils.getElementByDynamicXpath(Constant.PAGE, "Recent Email", Constant.emailSubject);
 	        PlaywrightUtils.waitForAnElement(recentEmail);
 	        PlaywrightUtils.click(recentEmail);
