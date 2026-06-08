@@ -47,7 +47,7 @@ Feature: Email accessibility validation
 
     Examples:
       | EmailName                               | ReceiverEmail                   |
-      | "Spring Lookbook 2026"                  | "sample@brpuvaer.mailosaur.net" |
+      | "Spring Lookbook 2026"                  | "sample@lxh6nlz2.mailosaur.net" |
     ##  | "Sample Mail - Automation Test 1"       | "sample@brpuvaer.mailosaur.net" |
      ## | "Perfectly Imperfect Email For Testing" | "sample@suleepqt.mailosaur.net" |
 

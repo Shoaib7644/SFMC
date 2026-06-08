@@ -40,6 +40,8 @@ public class ContentBuilderPage {
 			}
 			else {
 				PlaywrightUtils.waitForAnElement(PlaywrightUtils.getElementByDynamicXpath(contentBuilderFrame, "Dynamic Span Text", folderStructure));
+				PlaywrightUtils.waitForSec();
+				PlaywrightUtils.waitForSec();
 				PlaywrightUtils.click(PlaywrightUtils.getElementByDynamicXpath(contentBuilderFrame, "Dynamic Span Text", folderStructure));
 			}
 		} catch (Exception e) {

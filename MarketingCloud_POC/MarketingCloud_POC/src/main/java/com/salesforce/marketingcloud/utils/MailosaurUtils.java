@@ -24,8 +24,8 @@ import com.microsoft.playwright.Page;
 public class MailosaurUtils {
 
     // Mailosaur credentials (as provided)
-    private static final String MAILOSAUR_SERVER = "brpuvaer";
-    private static final String MAILOSAUR_APIKEY = "0hh2kcVTKoCf4ll4MQG2qRP5TcdpQ7Hl";
+    private static final String MAILOSAUR_SERVER = "lxh6nlz2";
+    private static final String MAILOSAUR_APIKEY = "9Y37VxKDdDDRSgsTH3fPAseWZSa7CafG";
 
     private static final String MAILOSAUR_BASE = "https://mailosaur.com/api";
     private static final HttpClient httpClient = HttpClient.newBuilder()
